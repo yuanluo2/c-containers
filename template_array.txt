@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
+
+typedef struct @ArrayTypeName {
+    @ElementType* data;
+    size_t capacity;
+    size_t length;
+} @ArrayTypeName;
+
+#define @ArrayTypeName_At(arrPtr, index)   ((arrPtr)->data[(index)])
+#define @ArrayTypeName_Capacity(arrPtr)    ((arrPtr)->capacity)
+#define @ArrayTypeName_Length(arrPtr)      ((arrPtr)->length)
+#define @ArrayTypeName_IsEmpty(arrPtr)     (@ArrayTypeName_Length(arrPtr) == 0)
+#define @ArrayTypeName_Front(arrPtr)       @ArrayTypeName_At(arrPtr, 0)
+#define @ArrayTypeName_Back(arrPtr)        @ArrayTypeName_At(arrPtr, @ArrayTypeName_Length(arrPtr) - 1)
+
+#define @ArrayTypeName_ForEach(arrPtr, cursor) \
+    for (cursor = 0; cursor < @ArrayTypeName_Length(arrPtr); ++cursor)
+
+#define @ArrayTypeName_ForEachReverse(arrPtr, cursor) \
+    for (cursor = @ArrayTypeName_Length(arrPtr) - 1; cursor >= 0; --cursor)
+
+@ArrayTypeName* @ArrayTypeName_CreateNew(size_t capacity) {
+    @ArrayTypeName* arr;
+    
+    if ((arr = (@ArrayTypeName*)malloc(sizeof(@ArrayTypeName))) == NULL) {
+        return NULL;
+    }
+
+    arr->length = 0;
+    arr->capacity = (capacity != 0) ? capacity : 5;
+
+    if ((arr->data = (@ElementType*)malloc(arr->capacity * sizeof(@ElementType))) == NULL) {
+        free(arr);
+        arr = NULL;
+    }
+
+    return arr;
+}
+
+void @ArrayTypeName_Destroy(@ArrayTypeName* arr) {
+    free(arr->data);
+    free(arr);
+}
+
+int @ArrayTypeName_ExpandCapacity(@ArrayTypeName* arr, size_t newCapacity) {
+    @ElementType* temp = (@ElementType*)realloc(arr->data, newCapacity * sizeof(@ElementType));
+    if (temp == NULL) {
+        return 0;
+    }
+
+    arr->data = temp;
+    arr->capacity = newCapacity;
+    return 1;
+}
+
+int @ArrayTypeName_PushBack(@ArrayTypeName* arr, @ElementType elem) {
+    if (arr->capacity == arr->length) {
+        if (!@ArrayTypeName_ExpandCapacity(arr, 2 * arr->capacity)) {
+            return 0;
+        }
+    }
+
+    arr->data[arr->length] = elem;
+    arr->length += 1;
+    return 1;
+}
+
+@ElementType* @ArrayTypeName_PushBackPreAlloc(@ArrayTypeName* arr) {
+    if (arr->capacity == arr->length) {
+        if (!@ArrayTypeName_ExpandCapacity(arr, 2 * arr->capacity)) {
+            return NULL;
+        }
+    }
+
+    arr->length += 1;
+    return &(arr->data[arr->length - 1]);
+}
+
+void @ArrayTypeName_PopBack(@ArrayTypeName* arr) {
+    if (@ArrayTypeName_IsEmpty(arr)) {
+        return;
+    }
+
+    arr->length -= 1;
+}
+
+void @ArrayTypeName_Remove(@ArrayTypeName* arr, size_t index) {
+    size_t i;
+
+    if (index >= @ArrayTypeName_Length(arr)) {
+        return;
+    }
+
+    for (i = index; i < @ArrayTypeName_Length(arr); ++i) {
+        @ArrayTypeName_At(arr, i) = @ArrayTypeName_At(arr, i + 1);
+    }
+
+    arr->length -= 1;
+}
+
+int main() {
+    return 0;
+}
