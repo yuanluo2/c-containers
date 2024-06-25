@@ -42,9 +42,9 @@ typedef struct GenericHashTable {
 #define GenericHashTable_BucketSize(hashTablePtr) \
     ((hashTablePtr)->bucketSize)   
 
-GenericHashNode* GenericHashTable_CreateNode(GenericHashTable* ht) {
-    return (GenericHashNode*)malloc(sizeof(GenericHashNode) + ht->keyElemSize + ht->valueElemSize);
-}
+#define GenericHashTable_CreateNode(hashTablePtr) \
+    (GenericHashNode*)malloc(sizeof(GenericHashNode) + ht->keyElemSize + ht->valueElemSize)
+
 
 void GenericHashTable_RemoveNode(GenericHashTable* ht, GenericHashNode* node) {
     ht->removeKeyElemFunc(GenericHashNode_Key(ht, node));
