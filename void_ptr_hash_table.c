@@ -134,6 +134,7 @@ void GenericHashTable_Set(GenericHashTable* ht, GenericHashNode* node) {
     }
 }
 
+/* usage. */
 int compare(void* left, void* right) {
     return !strcmp((const char*)left, (const char*)right);
 }
