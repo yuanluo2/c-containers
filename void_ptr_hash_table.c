@@ -141,6 +141,9 @@ void GenericHashTable_Set(GenericHashTable* ht, GenericHashNode* node) {
 }
 
 /* usage. */
+#define CHAR_BUF_MAX_LEN   20
+#define BUCKET_SIZE        101
+
 int compare(void* left, void* right) {
     return !strcmp((const char*)left, (const char*)right);
 }
@@ -153,10 +156,8 @@ unsigned int hash(void* data) {   /* from K & R. */
         hashval = *s + 31 * hashval;
     }
 
-    return hashval % 101;
+    return hashval % BUCKET_SIZE;
 }
-
-#define CHAR_BUF_MAX_LEN 20
 
 void create_my_hash_node(GenericHashTable*ht, const char* key, const char* value) {
     GenericHashNode* node = GenericHashTable_CreateNode(ht);
@@ -167,7 +168,7 @@ void create_my_hash_node(GenericHashTable*ht, const char* key, const char* value
 }
 
 int main() {
-    GenericHashTable* hashTable = GenericHashTable_CreateNew(101,
+    GenericHashTable* hashTable = GenericHashTable_CreateNew(BUCKET_SIZE,
                                                             CHAR_BUF_MAX_LEN * sizeof(char), 
                                                             CHAR_BUF_MAX_LEN * sizeof(char),
                                                             hash,
