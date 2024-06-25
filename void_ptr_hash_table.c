@@ -36,6 +36,12 @@ typedef struct GenericHashTable {
 #define GenericHashNode_Value(hashTablePtr, nodePtr) \
     (void*)((char*)(nodePtr + 1) + (hashTablePtr)->keyElemSize)
 
+#define GenericHashTable_Length(hashTablePtr) \
+    ((hashTablePtr)->length)
+
+#define GenericHashTable_BucketSize(hashTablePtr) \
+    ((hashTablePtr)->bucketSize)   
+
 GenericHashNode* GenericHashTable_CreateNode(GenericHashTable* ht) {
     return (GenericHashNode*)malloc(sizeof(GenericHashNode) + ht->keyElemSize + ht->valueElemSize);
 }
