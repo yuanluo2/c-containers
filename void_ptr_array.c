@@ -21,10 +21,13 @@ typedef struct GenericArray {
 #define GenericArray_Capacity(arrPtr)   ((arrPtr)->capacity)
 #define GenericArray_Length(arrPtr)     ((arrPtr)->length)
 #define GenericArray_Data(arrPtr)       ((arrPtr)->data)
-#define GenericArray_Clear(arrPtr)      GenericArray_Length(arrPtr) = 0;
 #define GenericArray_IsEmpty(arrPtr)    (GenericArray_Length(arrPtr) == 0)
 #define GenericArray_Front(arrPtr)      GenericArray_At(arrPtr, 0)
 #define GenericArray_Back(arrPtr)       GenericArray_At(arrPtr, GenericArray_Length(arrPtr) - 1)
+
+#define GenericArray_Clear(arrPtr) do {   \
+    GenericArray_Length(arrPtr) = 0;      \
+} while(0)
 
 #define GenericArray_ForEach(arrPtr, cursor) \
     for (cursor = 0; cursor < GenericArray_Length(arrPtr); ++cursor)
