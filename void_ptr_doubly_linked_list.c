@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <stddef.h>
 
+typedef void(*GenericDoublyList_RemoveElemFunc)(void*);
+void GenericDoublyList_RemoveElemFunc_Default(void*) {}
+
 typedef struct GenericDoublyListNode {
     struct GenericDoublyListNode* prev;
     struct GenericDoublyListNode* next;
@@ -12,6 +15,8 @@ typedef struct GenericDoublyList {
     GenericDoublyListNode* tail;
     size_t length;
     size_t elemSize;
+
+    GenericDoublyList_RemoveElemFunc removeElemFunc;
 } GenericDoublyList;
 
 #define GenericDoublyList_NodePrev(nodePtr)   ((nodePtr)->prev)
@@ -29,7 +34,7 @@ typedef struct GenericDoublyList {
 #define GenericDoublyList_ForEachReverse(listPtr, nodePtr) \
     for ((nodePtr) = (listPtr)->tail; (nodePtr) != NULL; (nodePtr) = (nodePtr)->prev)
 
-GenericDoublyList* GenericDoublyList_CreateNew(size_t elemSize) {
+GenericDoublyList* GenericDoublyList_CreateNew(size_t elemSize, GenericDoublyList_RemoveElemFunc func) {
     if (elemSize == 0) {
         return NULL;
     }
@@ -39,6 +44,7 @@ GenericDoublyList* GenericDoublyList_CreateNew(size_t elemSize) {
         return NULL;
     }
 
+    list->removeElemFunc = (func == NULL ? GenericDoublyList_RemoveElemFunc_Default : func);
     list->head = list->tail = NULL;
     list->length = 0;
     list->elemSize = elemSize;
@@ -50,6 +56,7 @@ void GenericDoublyList_Clear(GenericDoublyList* list) {
 
     while (list->head != NULL) {
         node = node->next;
+        list->removeElemFunc(GenericDoublyList_NodeData(list->head));
         free(list->head);
         list->head = node;
     }
@@ -128,6 +135,7 @@ GenericDoublyListNode* GenericDoublyList_RemoveNode(GenericDoublyList* list, Gen
         }
     }
 
+    list->removeElemFunc(GenericDoublyList_NodeData(node));
     free(node);
     list->length -= 1;
     return retNode;
@@ -150,7 +158,7 @@ void GenericDoublyList_PopBack(GenericDoublyList* list) {
 }
 
 int main() {
-    GenericDoublyList* list = GenericDoublyList_CreateNew(sizeof(int));
+    GenericDoublyList* list = GenericDoublyList_CreateNew(sizeof(int), NULL);
 
     int i;
     int* ptr;
