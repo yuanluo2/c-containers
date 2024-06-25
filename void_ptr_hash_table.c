@@ -156,22 +156,24 @@ unsigned int hash(void* data) {   /* from K & R. */
     return hashval % 101;
 }
 
+#define CHAR_BUF_MAX_LEN 20
+
 void create_my_hash_node(GenericHashTable*ht, const char* key, const char* value) {
     GenericHashNode* node = GenericHashTable_CreateNode(ht);
-    sprintf((char*)GenericHashNode_Key(ht, node), "%s", key);
-    sprintf((char*)GenericHashNode_Value(ht, node), "%s", value);
+    snprintf((char*)GenericHashNode_Key(ht, node), CHAR_BUF_MAX_LEN, "%s", key);
+    snprintf((char*)GenericHashNode_Value(ht, node), CHAR_BUF_MAX_LEN, "%s", value);
 
     GenericHashTable_Set(ht, node);
 }
 
 int main() {
     GenericHashTable* hashTable = GenericHashTable_CreateNew(101,
-                                                20 * sizeof(char), 
-                                                20 * sizeof(char),
-                                                hash,
-                                                compare,
-                                                NULL,
-                                                NULL);
+                                                            CHAR_BUF_MAX_LEN * sizeof(char), 
+                                                            CHAR_BUF_MAX_LEN * sizeof(char),
+                                                            hash,
+                                                            compare,
+                                                            NULL,
+                                                            NULL);
 
     create_my_hash_node(hashTable, "Bjarne", "Stroustrup");
     create_my_hash_node(hashTable, "a", "b");
