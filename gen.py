@@ -25,8 +25,8 @@ def create_array(targetFilePath, elementType, arrayTypeName):
 def create_doubly_linked_list(targetFilePath, elementType, listNodeTypeName, listTypeName):
     replaceMap = {
         '@ElementType': elementType,
-        '@listNodeTypeName': listNodeTypeName,
-        '@listTypeName': listTypeName
+        '@ListNodeTypeName': listNodeTypeName,
+        '@ListTypeName': listTypeName
     }
 
     templateFile = './template_doubly_linked_list.txt'
